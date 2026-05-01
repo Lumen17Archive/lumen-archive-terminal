@@ -1,26 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { TerminalLogin } from "../components/TerminalLogin";
+import { ArchivePage } from "../components/ArchivePage";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "LUMEN17 ARCHIVE" },
+      { name: "description", content: "signal locked" },
+      { name: "fragment04", content: "aHR0cHM6Ly90Lm1lLytRV3gxR3luRzF3bG1Oems2" },
+      { property: "og:title", content: "LUMEN17 ARCHIVE" },
+      { property: "og:description", content: "signal locked" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Index() {
+  const [unlocked, setUnlocked] = useState(false);
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="scanlines vhs-noise terminal-flicker min-h-svh bg-terminal-bg text-terminal font-mono selection:bg-terminal/20 selection:text-terminal-glow">
+      {unlocked ? <ArchivePage /> : <TerminalLogin onUnlock={() => setUnlocked(true)} />}
     </div>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }
