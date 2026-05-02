@@ -4,6 +4,7 @@ import { TerminalLogin } from "../components/TerminalLogin";
 import { ArchivePage } from "../components/ArchivePage";
 
 export const Route = createFileRoute("/")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "LUMEN17 ARCHIVE" },
