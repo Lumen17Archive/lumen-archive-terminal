@@ -70,6 +70,15 @@ export function ArchivePage() {
             {line}
           </p>
         ))}
+
+        {showTail && (
+          <p
+            className="archive-line text-[13px] sm:text-sm leading-relaxed tracking-wide text-terminal-dim mt-6"
+            style={{ animationDelay: "0s" }}
+          >
+            A page keeps more than it shows.
+          </p>
+        )}
       </div>
 
       {/* Hidden fragment */}
