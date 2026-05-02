@@ -39,11 +39,19 @@ const LORE_BLOCKS = [
 
 export function ArchivePage() {
   const [visible, setVisible] = useState(false);
+  const [showTail, setShowTail] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 200);
     return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    if (!visible) return;
+    const lastLineDelayMs = (LORE_BLOCKS.length - 1) * 120 + 300 + 400;
+    const t = setTimeout(() => setShowTail(true), lastLineDelayMs + 3000);
+    return () => clearTimeout(t);
+  }, [visible]);
 
   if (!visible) return null;
 
@@ -62,6 +70,15 @@ export function ArchivePage() {
             {line}
           </p>
         ))}
+
+        {showTail && (
+          <p
+            className="archive-line text-[13px] sm:text-sm leading-relaxed tracking-wide text-terminal-dim mt-6"
+            style={{ animationDelay: "0s" }}
+          >
+            A page keeps more than it shows.
+          </p>
+        )}
       </div>
 
       {/* Hidden fragment */}
