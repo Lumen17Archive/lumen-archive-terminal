@@ -103,49 +103,15 @@
   }
 }
 
-/* Scanlines overlay */
-@keyframes scanline-move {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(4px); }
-}
-
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  92% { opacity: 1; }
-  93% { opacity: 0.8; }
-  94% { opacity: 1; }
-  96% { opacity: 0.9; }
-  97% { opacity: 1; }
-}
-
-@keyframes text-glow-pulse {
-  0%, 100% { text-shadow: 0 0 4px oklch(0.6 0.18 145 / 40%), 0 0 12px oklch(0.6 0.18 145 / 15%); }
-  50% { text-shadow: 0 0 6px oklch(0.6 0.18 145 / 55%), 0 0 18px oklch(0.6 0.18 145 / 25%); }
-}
-
-@keyframes cursor-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
+/* Performance-first terminal effects: all overlays are static; only one short
+   non-looping fade animation remains for archive line entrance. */
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes noise {
-  0%, 100% { background-position: 0 0; }
-  10% { background-position: -5% -10%; }
-  20% { background-position: -15% 5%; }
-  30% { background-position: 7% -25%; }
-  40% { background-position: 20% 25%; }
-  50% { background-position: -25% 10%; }
-  60% { background-position: 15% 5%; }
-  70% { background-position: 0 15%; }
-  80% { background-position: 25% 35%; }
-  90% { background-position: -10% 10%; }
-}
-
+/* Static scanlines: a fixed repeating gradient. No animation, no transform. */
 .scanlines::after {
   content: "";
   position: fixed;
@@ -154,44 +120,48 @@
   z-index: 100;
   background: repeating-linear-gradient(
     0deg,
-    transparent,
+    transparent 0,
     transparent 2px,
-    oklch(0 0 0 / 4%) 2px,
-    oklch(0 0 0 / 4%) 4px
+    oklch(0 0 0 / 3%) 2px,
+    oklch(0 0 0 / 3%) 3px
   );
-  animation: scanline-move 0.1s linear infinite;
 }
 
+/* Static noise: SVG fractal pattern rendered once, no animation. */
 .vhs-noise::before {
   content: "";
   position: fixed;
-  inset: -50%;
-  width: 200%;
-  height: 200%;
+  inset: 0;
   pointer-events: none;
   z-index: 99;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  animation: noise 0.5s steps(5) infinite;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
-.terminal-flicker {
-  animation: flicker 4s infinite;
-}
-
+/* No-op classes kept for component compatibility (effects removed for FPS). */
+.terminal-flicker {}
 .terminal-text-glow {
-  animation: text-glow-pulse 3s ease-in-out infinite;
+  /* Single tiny static glow instead of animated text-shadow pulse. */
+  text-shadow: 0 0 2px oklch(0.6 0.18 145 / 35%);
 }
-
 .cursor-blink {
-  animation: cursor-blink 1s step-end infinite;
+  /* Static dim cursor — no infinite blink animation. */
+  opacity: 0.5;
 }
 
 .archive-fade-in {
-  animation: fade-in-up 0.8s ease-out both;
+  animation: fade-in-up 0.5s ease-out both;
 }
 
 .archive-line {
   opacity: 0;
-  animation: fade-in-up 0.6s ease-out forwards;
+  animation: fade-in-up 0.4s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-fade-in,
+  .archive-line {
+    animation: none;
+    opacity: 1;
+  }
 }
